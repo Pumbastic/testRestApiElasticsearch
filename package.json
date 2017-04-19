@@ -1,7 +1,6 @@
 {
   "name": "testelasticsearch",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,5 +15,15 @@
     "express3-handlebars": "^0.5.2",
     "node-sass": "^4.5.2",
     "pug": "^2.0.0-beta.12"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pumbastic/testRestApiElasticsearch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Pumbastic/testRestApiElasticsearch/issues"
+  },
+  "homepage": "https://github.com/Pumbastic/testRestApiElasticsearch#readme",
+  "description": ""
 }

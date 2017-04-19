@@ -21,24 +21,17 @@ router.get('/search', function(req, res){
         const page = getParameterByName('page', search);
         const size = getParameterByName('size', search);
 
-        if (!( Math.floor(page) === Math.ceil(page) && page > 0 )) {
-            res.status(400).render("Pages are intended to be positive integers");
-        } else if (!( Math.floor(size) === Math.ceil(size) && size > 0 )) {
-            res.status(400).render("Pages size intended to be positive integers");
-        } else {
+        Promise.resolve(getData('store', 'category', size, page, search)).then(function (hits) {
+            if (hits) {
+                res.render('categoriesSearch', {data: template({data: hits})});
+            } else {
+                res.render('categoriesSearch');
+            }
+        });
 
-            Promise.resolve(getData('store', 'category', size, page, search)).then(function (hits) {
-                if (hits) {
-                    res.render('categoriesSearch', {data: template({data: hits})});
-                } else {
-                    res.render('categoriesSearch');
-                }
-            });
-        }
     } else {
         res.render('categoriesSearch');
     }
-
 });
 
 module.exports = router;

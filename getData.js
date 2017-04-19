@@ -8,9 +8,16 @@ const client = new elasticsearch.Client({
 module.exports = function getData(index, type, size, page, search) {
 
     return new Promise((resolve, reject) => {
-
         if( search !== undefined && search !== null )
         {
+            if (!( Math.floor(page) === Math.ceil(page) && page > 0 )) {
+                console.error("Pages are intended to be positive integers");
+                return resolve(null);
+            } else if (!( Math.floor(size) === Math.ceil(size) && size > 0 )) {
+                console.error("Pages size are intended to be positive integers");
+                return resolve(null);
+            }
+
             var name = getParameterByName('name', search);
             var description = getParameterByName('description', search);
             var ratingLo = getParameterByName('ratingLo', search);
