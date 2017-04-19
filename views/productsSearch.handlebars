@@ -1,0 +1,37 @@
+
+<div>
+    <hr>
+    <form action="/products/search" method="get"/>
+
+    Name:<br>
+    <input type="text" name="name"/>
+    <br>
+
+    Description:<br>
+    <input type="text" name="description"/>
+    <br>
+
+    Rating:<br>
+    <input type="text" name="ratingLo"/>:
+    <input type="text" name="ratingHi"/>
+    <br>
+
+    Price:<br>
+    <input type="text" name="priceLo"/>:
+    <input type="text" name="priceHi"/>
+    <br>
+
+    Page:<br>
+    <input type="text" name="page" value="1"/>
+    <br>
+
+    Per page:<br>
+    <input type="text" name="size" value="10"/>
+    <br>
+
+    <hr>
+    <input type="submit" value="Search"/>
+    </form><hr>
+    {{{data}}}
+
+</div>

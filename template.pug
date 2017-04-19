@@ -1,0 +1,11 @@
+
+doctype html
+
+- for (var i = 0; i < data.length; i++)
+   .post
+      .post-title
+         h3 #{data[i]._source.name}
+      .post-body
+         b #{data[i]._source.description}
+      hr
+
