@@ -9,10 +9,6 @@ const Promise = require('bluebird');
 
 router.use(bodyParser.urlencoded());
 
-router.get('/', function(req, res){
-    res.render('categories');
-});
-
 router.get('/search', function(req, res){
 
     if(req._parsedOriginalUrl.search) {
