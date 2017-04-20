@@ -4,7 +4,6 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const pug = require('pug');
 const template = pug.compileFile('template.pug');
-const getParameterByName = require('./getParameterByName');
 const getData = require('./getData');
 const Promise = require('bluebird');
 
@@ -16,12 +15,9 @@ router.get('/', function(req, res){
 
 router.get('/search', function(req, res){
 
-    const search = req._parsedOriginalUrl.search;
-    if(search) {
-        const page = getParameterByName('page', search);
-        const size = getParameterByName('size', search);
+    if(req._parsedOriginalUrl.search) {
 
-        Promise.resolve(getData('store', 'product', size, page, search)).then(function (hits) {
+        Promise.resolve(getData('store', 'product', req.query)).then(function (hits) {
             if (hits) {
                 res.render('productsSearch', {data: template({data: hits})});
             } else {

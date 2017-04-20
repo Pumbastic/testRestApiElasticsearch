@@ -12,6 +12,8 @@ const client = new elasticsearch.Client({
     // log: 'trace'
 });
 
+app.disable('x-powered-by');
+
 app.use(bodyParser.urlencoded());
 app.use(express.static(__dirname + '/public'));
 app.use('/categories', require('./categories'));
