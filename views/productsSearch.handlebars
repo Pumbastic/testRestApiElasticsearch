@@ -32,6 +32,19 @@
     <hr>
     <input type="submit" value="Search"/>
     </form><hr>
-    {{{data}}}
+
+    {{#each data}}
+        <div class="post">
+            <div class="post-title">
+                <h3>{{{_source.name}}}</h3>
+            </div>
+            <div class="post-body">
+                <b>{{{_source.description}}}</b>
+                <p>{{{_source.price}}} USD</p>
+                <p>Rating: {{{_source.rating}}}</p>
+            </div>
+            <hr>
+        </div>
+    {{/each}}
 
 </div>

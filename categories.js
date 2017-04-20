@@ -15,7 +15,8 @@ router.get('/search', function(req, res){
 
         Promise.resolve(getData('store', 'category', req.query)).then(function (hits) {
             if (hits) {
-                res.render('categoriesSearch', {data: template({data: hits})});
+              //res.render('categoriesSearch', {data: template({data: hits})}); // backend rendering
+                res.render('categoriesSearch', {data: hits});
             } else {
                 res.render('categoriesSearch');
             }
