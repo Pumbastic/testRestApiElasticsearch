@@ -4,93 +4,84 @@ const client = new elasticsearch.Client({
     // log: 'trace'
 })
 
-module.exports = function getData(index, type, query) {
+module.exports = function getData(index, type, q) {
 
     return new Promise((resolve, reject) => {
-
-        const page        = query.page;
-        const size        = query.size;
-        const name        = query.name;
-        const description = query.description;
-        const ratingLo    = query.ratingLo;
-        const ratingHi    = query.ratingHi;
-        const priceLo     = query.priceLo;
-        const priceHi     = query.priceHi;
 
         var must = [];
         var filter = [];
 
-        if (!( Math.floor(page) === Math.ceil(page) && page > 0 )) {
+        if (!( Math.floor(q.page) === Math.ceil(q.page) && q.page > 0 )) {
             console.error("Pages are intended to be positive integers");
             return resolve();
-        } else if (!( Math.floor(size) === Math.ceil(size) && size > 0 )) {
+        } else if (!( Math.floor(q.size) === Math.ceil(q.size) && q.size > 0 )) {
             console.error("Pages size are intended to be positive integers");
             return resolve();
         }
 
-        if (name || description || ratingLo || ratingHi || priceLo || priceHi) { // if any parameter was injected
+        if (q.name || q.description || q.ratingLo || q.ratingHi || q.priceLo || q.priceHi) { // if any parameter was injected
 
             var i = 0; // for queries array
-            if (name !== undefined && name !== "") {
-                must[i++] = {"match": {"name": name}};
+            if (q.name !== undefined && q.name !== "") {
+                must[i++] = {"match": {"name": q.name}};
             }
-            if (description !== undefined && description !== "") {
-                must[i++] = {"match": {"description": description}};
+            if (q.description !== undefined && q.description !== "") {
+                must[i++] = {"match": {"description": q.description}};
             }
 
             var j = 0; // for filters array
-            if (ratingLo !== undefined && ratingHi !== undefined) {
-                if (ratingLo !== "" && ratingHi !== "") {
-                    if (isNaN(ratingLo) || isNaN(ratingHi)) {
+            if (q.ratingLo !== undefined && q.ratingHi !== undefined) {
+                if (q.ratingLo !== "" && q.ratingHi !== "") {
+                    if (isNaN(q.ratingLo) || isNaN(q.ratingHi)) {
                         console.error("Rating requires a number!");
                         return resolve()
-                    } else if (ratingHi < ratingLo) {
+                    } else if (q.ratingHi < q.ratingLo) {
                         console.error("Rating lower bound was greater than upper bound!");
                         return resolve()
                     } else {
-                        filter[j++] = {"range": {"rating": {"gte": ratingLo, "lte": ratingHi}}};
+                        filter[j++] = {"range": {"rating": {"gte": q.ratingLo, "lte": q.ratingHi}}};
                     }
-                } else if (ratingLo !== "") {
-                    if (isNaN(ratingLo)) {
+                } else if (q.ratingLo !== "") {
+                    if (isNaN(q.ratingLo)) {
                         console.error("Rating requires a number!");
                         return resolve()
                     } else {
-                        filter[j++] = {"range": {"rating": {"gte": ratingLo}}};
+                        filter[j++] = {"range": {"rating": {"gte": q.ratingLo}}};
                     }
-                } else if (ratingHi !== "") {
-                    if (isNaN(ratingHi)) {
+                } else if (q.ratingHi !== "") {
+                    if (isNaN(q.ratingHi)) {
                         console.error("Rating requires a number!");
                         return resolve()
                     } else {
-                        filter[j++] = {"range": {"rating": {"lte": ratingHi}}};
+                        filter[j++] = {"range": {"rating": {"lte": q.ratingHi}}};
                     }
                 }
             }
 
-            if (priceLo !== undefined && priceHi !== undefined) {
-                if (priceLo !== "" && priceHi !== "") {
-                    if (isNaN(priceLo) || isNaN(priceHi) || priceLo < 0 || priceHi < 0) {
+            if (q.priceLo !== undefined && q.priceHi !== undefined) {
+                if (q.priceLo !== "" && q.priceHi !== "") {
+                    if (isNaN(q.priceLo) || isNaN(q.priceHi) || q.priceLo < 0 || q.priceHi < 0) {
                         console.error("Price fields require a positive number!");
                         return resolve()
-                    } else if (priceHi < priceLo) {
+                    } else if (q.priceHi < q.priceLo) {
                         console.error("Price lower bound was greater than upper bound!");
                         return resolve()
                     } else {
-                        filter[j++] = {"range": {"price": {"gte": priceLo, "lte": priceHi}}};
+                        filter[j++] = {"range": {"price": {"gte": q.priceLo, "lte": q.priceHi}}};
                     }
-                } else if (priceLo !== "") {
-                    if (isNaN(priceLo) || priceLo < 0) {
+                } else if (q.priceLo !== "") {
+                    if (isNaN(q.priceLo) || q.priceLo < 0) {
                         console.error("Price requires a positive number!");
                         return resolve()
                     } else {
-                        filter[j++] = {"range": {"price": {"gte": priceLo}}};
+                        filter[j++] = {"range": {"price": {"gte": q.priceLo}}};
                     }
-                } else if (priceHi !== "") {
-                    if (isNaN(priceHi) || priceHi < 0) {
+                } else if (q.priceHi !== "") {
+                    if (isNaN(q.priceHi) || q.priceHi < 0) {
                         console.error("Price requires a positive number!");
                         return resolve()
                     } else {
-                        filter[j++] = {"range": {"price": {"lte": priceHi}}};
+                        filter[j++] = {"range": {"price": {"lte": q.priceHi}}};
                     }
                 }
             }
@@ -100,8 +91,8 @@ module.exports = function getData(index, type, query) {
             method: "POST",
             index: index,
             type: type,
-            from: size*(page -1),
-            size: size,
+            from: q.size*(q.page -1),
+            size: q.size,
             defaultOperator: 'OR',
             body: {
                 "query": {
